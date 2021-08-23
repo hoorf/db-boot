@@ -1,0 +1,2 @@
+org.github.hoorf.dbboot.core.router.impl.RoundDataSourceRouter
+org.github.hoorf.dbboot.core.router.impl.InlineStandardRouter

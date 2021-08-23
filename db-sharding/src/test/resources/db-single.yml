@@ -1,0 +1,21 @@
+dataSources:
+  oldDb:
+    url: jdbc:mysql://127.0.0.1:3306/ds_0?serverTimezone=UTC
+    driverClass: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  newDb_1:
+    url: jdbc:mysql://127.0.0.1:3306/ds_1?serverTimezone=UTC
+    driverClass: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+tables:
+  t_user_sharding:
+    source:
+      pk: id
+      dataSourceName: oldDb
+      tableName: tb_live_verify
+    target:
+      tableName: tb_live_verify
+      dataSourceName: newDb_1
+
