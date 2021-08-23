@@ -1,0 +1,29 @@
+dataSources:
+  oldDb:
+    url: jdbc:mysql://127.0.0.1:3306/bigdata?serverTimezone=UTC&rewriteBatchedStatements=true
+    driverClass: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  newDb_1:
+    url: jdbc:mysql://127.0.0.1:3306/ds_1?serverTimezone=UTC&rewriteBatchedStatements=true
+    driverClass: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+tables:
+  t_user_sharding:
+    source:
+      pk: id
+      dataSourceName: oldDb
+      tableName: t_user
+    target:
+      tableName: t_user
+      dataSourceName: newDb_1
+  t_user_sharding_copy:
+    source:
+      pk: id
+      dataSourceName: oldDb
+      tableName: t_user
+    target:
+      tableName: t_user_copy
+      dataSourceName: oldDb
+

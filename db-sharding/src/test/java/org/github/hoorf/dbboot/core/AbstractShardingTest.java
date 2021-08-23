@@ -52,6 +52,19 @@ public class AbstractShardingTest {
         stopWatch.stop();
         System.out.println(stopWatch);
     }
+    @Test
+    public void testBigMultiProcess() throws Exception {
+        StopWatch stopWatch = new StopWatch();
+        Yaml yaml = new Yaml();
+        ShardingConfiguration configuration = yaml
+                .loadAs(YamlConfigurationTest.class.getClassLoader().getResourceAsStream("db-bigsingle-multi.yml"),
+                        ShardingConfiguration.class);
+        AbstractSharding abstractSharding = new AbstractSharding(configuration);
+        stopWatch.start();
+        abstractSharding.process();
+        stopWatch.stop();
+        System.out.println(stopWatch);
+    }
 
 
     @Test

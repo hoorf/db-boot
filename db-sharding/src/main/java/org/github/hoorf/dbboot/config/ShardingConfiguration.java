@@ -15,5 +15,6 @@ public final class ShardingConfiguration {
     private Map<String, ShardingDataSourceConfiguration> dataSources = new LinkedHashMap<>();
     private Map<String, ShardingTableConfiguration> tables = new LinkedHashMap<>();
 
+    private ShardingGlobalConfiguration globalConfig = new ShardingGlobalConfiguration();
 
 }

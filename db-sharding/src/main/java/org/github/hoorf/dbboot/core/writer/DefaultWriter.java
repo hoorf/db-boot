@@ -137,9 +137,11 @@ public class DefaultWriter extends AbstractWriter implements Writer {
             preparedStatement.setNull(columnIndex, metadataType);
             return;
         }
-        Class<?> valueClass = value.getClass();
-        JDBCType jdbcType = JDBCType.valueOf(metadataType);
-        TypeHandler typeHandler = TypeHandlerRegistry.getTypeHandler(valueClass, jdbcType);
-        typeHandler.setParameter(preparedStatement, columnIndex, value, jdbcType);
+//        Class<?> valueClass = value.getClass();
+//        JDBCType jdbcType = JDBCType.valueOf(metadataType);
+//        TypeHandler typeHandler = TypeHandlerRegistry.getTypeHandler(valueClass, jdbcType);
+//        typeHandler.setParameter(preparedStatement, columnIndex, value, jdbcType);
+
+        preparedStatement.setObject(columnIndex,value);
     }
 }

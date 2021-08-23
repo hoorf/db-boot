@@ -3,6 +3,7 @@ package org.github.hoorf.dbboot.core;
 import com.google.common.base.Preconditions;
 import org.github.hoorf.dbboot.config.ShardingConfiguration;
 import org.github.hoorf.dbboot.config.ShardingDataSourceConfiguration;
+import org.github.hoorf.dbboot.config.ShardingGlobalConfiguration;
 import org.github.hoorf.dbboot.config.ShardingTableConfiguration;
 import org.github.hoorf.dbboot.core.reader.Reader;
 import org.github.hoorf.dbboot.core.router.StandardRouter;
@@ -37,11 +38,12 @@ public class AbstractSharding {
 
     public void process() {
         validateConfig();
-        ShardingProcess shardingProcess = new ShardingProcess();
         Map<String, ShardingDataSourceConfiguration> dataSources = shardingConfiguration.getDataSources();
         Map<String, ShardingTableConfiguration> tableConfigs = shardingConfiguration.getTables();
+        ShardingGlobalConfiguration globalConfig = shardingConfiguration.getGlobalConfig();
         for (ShardingTableConfiguration shardingTableConfiguration : tableConfigs.values()) {
-            shardingProcess.config(shardingTableConfiguration, dataSources);
+            ShardingProcess shardingProcess = new ShardingProcess();
+            shardingProcess.config(shardingTableConfiguration, dataSources,globalConfig);
             shardingProcess.start();
         }
     }
