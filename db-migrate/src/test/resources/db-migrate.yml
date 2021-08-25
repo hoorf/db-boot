@@ -1,0 +1,16 @@
+globalConfig:
+  dataSources:
+    oldDb:
+      databaseType: mysql
+      url: jdbc:mysql://127.0.0.1:3306/bigdata?serverTimezone=UTC&rewriteBatchedStatements=true
+      driverClass: com.mysql.cj.jdbc.Driver
+      username: root
+      password: root
+    newDb_1:
+      databaseType: mysql
+      url: jdbc:mysql://127.0.0.1:3306/ds_1?serverTimezone=UTC&rewriteBatchedStatements=true
+      driverClass: com.mysql.cj.jdbc.Driver
+      username: root
+      password: root
+  dumpConfig:
+  importConfig:
