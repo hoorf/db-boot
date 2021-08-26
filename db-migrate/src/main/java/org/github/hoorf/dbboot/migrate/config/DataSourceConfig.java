@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class DataSourceConfig {
 
+    private String name;
+
     private String databaseType;
 
     private String url;

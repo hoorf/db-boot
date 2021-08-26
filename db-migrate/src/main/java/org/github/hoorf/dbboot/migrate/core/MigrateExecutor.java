@@ -1,6 +1,8 @@
 package org.github.hoorf.dbboot.migrate.core;
 
-public interface MigrateExecutor extends Runnable {
+import org.github.hoorf.dbboot.migrate.core.context.MigrateContextHolder;
+
+public interface MigrateExecutor extends MigrateContextHolder, Runnable {
 
     void start();
 

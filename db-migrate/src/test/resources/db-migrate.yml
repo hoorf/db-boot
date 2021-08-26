@@ -12,5 +12,10 @@ globalConfig:
       driverClass: com.mysql.cj.jdbc.Driver
       username: root
       password: root
-  dumpConfig:
-  importConfig:
+jobs:
+  t_user_migrate:
+    type: inventory
+    table: t_user
+    sourceName: oldDb
+    targetName: newDb_1
+

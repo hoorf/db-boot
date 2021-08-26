@@ -1,0 +1,2 @@
+org.github.hoorf.dbboot.migrate.core.dumper.MysqlDumper
+org.github.hoorf.dbboot.migrate.core.dumper.OracleDumper

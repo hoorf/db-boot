@@ -15,12 +15,15 @@ public class GlobalConfig {
 
     private ImportConfig importConfig;
 
-
-    public class DumpConfig {
-
+    @Getter
+    @Setter
+    public static class DumpConfig {
+        private Integer batchSize = 1000;
     }
 
-    public class ImportConfig {
+    @Getter
+    @Setter
+    public static class ImportConfig {
 
     }
 }

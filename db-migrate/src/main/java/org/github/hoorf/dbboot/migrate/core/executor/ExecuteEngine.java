@@ -47,5 +47,9 @@ public class ExecuteEngine {
         submit(executor, null, error);
     }
 
+    public void close() {
+        executorService.shutdown();
+    }
+
 
 }

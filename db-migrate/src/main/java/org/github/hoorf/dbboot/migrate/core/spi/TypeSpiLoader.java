@@ -9,18 +9,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TypeSpiLoader {
 
-
     private static final Map<Class<?>, Collection<Object>> SERVICES = new ConcurrentHashMap<>();
 
-
-    public static void register(Class clazz) {
+    protected static void register(Class clazz) {
         SERVICES.put(clazz, Lists.newArrayList(ServiceLoader.load(clazz)));
     }
 
-
-    public static Class<?> getClassByType(Class<? extends TypeSpi> clazz, String type) {
+    protected static Class<?> getClassByType(Class<? extends TypeSpi> clazz, String type) {
         return Optional.ofNullable(SERVICES.get(clazz))
             .flatMap(value -> value.stream()
-                .map(each -> (TypeSpi) each).filter(each -> each.type().equals(type)).findFirst()).orElse(null).getClass();
+                .map(each -> (TypeSpi) each).filter(each -> each.type().equals(type)).findFirst())
+            .map(value -> value.getClass()).orElse(null);
     }
+
+    protected static <T extends TypeSpi> T newInstance(Class<? extends TypeSpi> clazz, String type) {
+        return Optional.ofNullable(getClassByType(clazz, type)).map(value -> {
+            try {
+                T o = (T) value.newInstance();
+                return o;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }).orElse(null);
+    }
+
+
 }

@@ -8,6 +8,12 @@ public class RangePosition implements MigratePosition<RangePosition> {
 
     private final long endValue;
 
+
+    public RangePosition(long beginValue, long endValue) {
+        this.beginValue = beginValue;
+        this.endValue = endValue;
+    }
+
     public RangePosition(String keys) {
         Preconditions.checkNotNull(keys);
         String[] split = keys.split(",");
