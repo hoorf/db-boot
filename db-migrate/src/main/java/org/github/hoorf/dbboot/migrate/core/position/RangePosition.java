@@ -1,11 +1,14 @@
 package org.github.hoorf.dbboot.migrate.core.position;
 
 import com.google.common.base.Preconditions;
+import lombok.Getter;
 
 public class RangePosition implements MigratePosition<RangePosition> {
 
+    @Getter
     private final long beginValue;
 
+    @Getter
     private final long endValue;
 
 

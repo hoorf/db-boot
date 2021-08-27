@@ -34,8 +34,13 @@ public abstract class AbstractMigrateSQLBuilder implements MigrateSQLBuilder {
         return String.format("INSERT INTO %s(%s) VALUES(%s)", quote(tableName), labelHolder, valueHolder);
     }
 
-    public String buildSelectPkSQL(String tableName, String pk) {
-        return String.format("SELECT max(%s) FROM (SELECT %s FROM %s WHERE %s >= ? LIMIT ?) t", quote(pk), quote(pk), quote(tableName),quote(pk));
+    public String buildSelectPkRangeSQL(String tableName, String pk) {
+        return String.format("SELECT max(%s) FROM (SELECT %s FROM %s WHERE %s >= ? LIMIT ?) t", quote(pk), quote(pk), quote(tableName), quote(pk));
+    }
+
+    @Override
+    public String buildSelectSQL(String tableName, String pk) {
+        return String.format("SELECT * FROM %s WHERE %s BETWEEN ? and ? ", quote(tableName), quote(pk));
     }
 
     public String quote(String str) {

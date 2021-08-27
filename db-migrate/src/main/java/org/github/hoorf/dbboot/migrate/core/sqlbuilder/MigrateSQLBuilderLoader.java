@@ -8,7 +8,12 @@ public class MigrateSQLBuilderLoader extends TypeSpiLoader {
     }
 
 
-    public static MigrateSQLBuilder getInstance(String type) {
-        return newInstance(MigrateSQLBuilder.class, type);
+    /**
+     *
+     * @param databaseType
+     * @return
+     */
+    public static MigrateSQLBuilder getInstance(String databaseType) {
+        return newInstance(MigrateSQLBuilder.class, databaseType);
     }
 }

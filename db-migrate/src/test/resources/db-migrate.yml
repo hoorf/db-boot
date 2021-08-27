@@ -16,6 +16,6 @@ jobs:
   t_user_migrate:
     type: inventory
     table: t_user
-    sourceName: oldDb
-    targetName: newDb_1
+    source: oldDb
+    target: newDb_1
 

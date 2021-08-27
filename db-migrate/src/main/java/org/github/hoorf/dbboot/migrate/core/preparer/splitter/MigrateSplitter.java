@@ -19,9 +19,9 @@ public class MigrateSplitter {
 
     public List<MigratePosition> splitter(MigrateContext context) {
         List<MigratePosition> result = new ArrayList<>();
-        DataSourceWrapper dataSource = context.getDataSourceManager().getDataSource(context.getSourceName());
+        DataSourceWrapper dataSource = context.getDataSourceManager().getDataSource(context.getJobConfig().getSource());
         MigrateSQLBuilder sqlBuilder = MigrateSQLBuilderLoader.getInstance(dataSource.getDatabaseType());
-        String sql = sqlBuilder.buildSelectPkSQL(context.getTable(), context.getPk());
+        String sql = sqlBuilder.buildSelectPkRangeSQL(context.getJobConfig().getTable(), context.getJobConfig().getPk());
         try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql);
         ) {

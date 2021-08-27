@@ -27,9 +27,11 @@ public class OneOffMigrateJob implements MigrateJob {
         MigratePreparer preparer = new MigratePreparer();
         List<MigratePosition> positions = preparer.prepare(context);
         for (MigratePosition position : positions) {
-            MigrateTask migrateTask = MigrateTaskFactory.newTask(context, jobConfig,position);
-            context.getExecuteEngine().submit(migrateTask, null);
+            MigrateTask migrateTask = MigrateTaskFactory.newTask(context, jobConfig, position);
+           // migrateTask.run();
+             context.getExecuteEngine().submit(migrateTask, null);
         }
+        context.getExecuteEngine().awaitFinish();
     }
 
 

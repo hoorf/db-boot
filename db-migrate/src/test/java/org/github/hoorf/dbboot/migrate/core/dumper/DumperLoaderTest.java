@@ -19,9 +19,9 @@ public class DumperLoaderTest {
 
     @Test
     public void testGetDumper() throws Exception {
-        Dumper mysql = DumperLoader.getDumper("mysql");
+        Dumper mysql = DumperFactory.getInstance("mysql");
         assertTrue(mysql instanceof MysqlDumper);
-        assertTrue(DumperLoader.getDumper("oracle") instanceof OracleDumper);
+        assertTrue(DumperFactory.getInstance("oracle") instanceof OracleDumper);
     }
 
 

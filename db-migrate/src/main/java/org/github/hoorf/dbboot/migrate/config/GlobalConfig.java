@@ -11,9 +11,9 @@ public class GlobalConfig {
 
     private Map<String, DataSourceConfig> dataSources = new HashMap<>();
 
-    private DumpConfig dumpConfig;
+    private DumpConfig dumpConfig = new DumpConfig();
 
-    private ImportConfig importConfig;
+    private ImportConfig importConfig = new ImportConfig();
 
     @Getter
     @Setter
