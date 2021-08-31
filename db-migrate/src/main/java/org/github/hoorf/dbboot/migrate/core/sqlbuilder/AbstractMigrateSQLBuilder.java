@@ -3,6 +3,7 @@ package org.github.hoorf.dbboot.migrate.core.sqlbuilder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import org.apache.commons.lang3.StringUtils;
 import org.github.hoorf.dbboot.migrate.core.record.Column;
 import org.github.hoorf.dbboot.migrate.core.record.DataRecord;
 
@@ -19,14 +20,16 @@ public abstract class AbstractMigrateSQLBuilder implements MigrateSQLBuilder {
     private final ConcurrentMap<String, String> sqlCacheMap = new ConcurrentHashMap<>();
 
 
-    public String buildInsertSQL(DataRecord dataRecord) {
-        String sqlCacheKey = INSERT_SQL_CACHE_KEY_PREFIX + dataRecord.getTableName();
-        return sqlCacheMap.computeIfAbsent(sqlCacheKey, e -> buildInsertSQLInternal(dataRecord.getTableName(), dataRecord.getColumns()));
+    public String buildInsertSQL(DataRecord dataRecord, final String tableName) {
+        String table = tableName == null ? dataRecord.getTableName() : tableName;
+        String sqlCacheKey = INSERT_SQL_CACHE_KEY_PREFIX + table;
+        return sqlCacheMap.computeIfAbsent(sqlCacheKey, e -> buildInsertSQLInternal(table, dataRecord.getColumns()));
     }
 
-    public String buildInsertOrUpdateSQL(DataRecord dataRecord) {
-        String sqlCacheKey = INSERT_OR_UPDATE_SQL_CACHE_KEY_PREFIX + dataRecord.getTableName();
-        return sqlCacheMap.computeIfAbsent(sqlCacheKey, e -> buildInsertOrUpdateSQLInternal(dataRecord.getTableName(), dataRecord.getColumns()));
+    public String buildInsertOrUpdateSQL(DataRecord dataRecord, final String tableName) {
+        String table = tableName == null ? dataRecord.getTableName() : tableName;
+        String sqlCacheKey = INSERT_OR_UPDATE_SQL_CACHE_KEY_PREFIX + table;
+        return sqlCacheMap.computeIfAbsent(sqlCacheKey, e -> buildInsertOrUpdateSQLInternal(table, dataRecord.getColumns()));
     }
 
     protected abstract String buildInsertOrUpdateSQLInternal(String tableName, List<Column> columnList);

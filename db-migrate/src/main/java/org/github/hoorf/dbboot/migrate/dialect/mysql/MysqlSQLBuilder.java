@@ -46,7 +46,7 @@ public class MysqlSQLBuilder extends AbstractMigrateSQLBuilder {
     }
 
     @Override
-    public String type() {
+    public String getType() {
         return "mysql";
     }
 }

@@ -15,7 +15,7 @@ public class MysqlInventoryDumper extends AbstractInventoryDumper {
     }
 
     @Override
-    public String type() {
+    public String getType() {
         return "mysql";
     }
 }

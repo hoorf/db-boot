@@ -20,13 +20,11 @@ public class InventoryJobConfig extends JobConfig {
 
 
     public InventoryJobConfig(GlobalConfig globalConfig, JobConfig jobConfig, MigratePosition position) {
-        Map<String, DataSourceConfig> dataSources = globalConfig.getDataSources();
         this.setSource(jobConfig.getSource());
-        this.setTable(jobConfig.getTable());
         this.setTarget(jobConfig.getTarget());
         this.setType(jobConfig.getType());
-        this.dumperType = dataSources.get(getSource()).getDatabaseType();
-        this.importerType = dataSources.get(getTarget()).getDatabaseType();
+        this.dumperType = getSource().getDumpConfig().getDatabaseType();
+        this.importerType = getTarget().getImportConfig().getDatabaseType();
         this.position = position;
     }
 

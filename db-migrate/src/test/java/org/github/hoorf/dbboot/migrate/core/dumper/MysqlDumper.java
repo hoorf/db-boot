@@ -24,7 +24,7 @@ public class MysqlDumper implements Dumper {
     }
 
     @Override
-    public String type() {
+    public String getType() {
         return "mysql";
     }
 }

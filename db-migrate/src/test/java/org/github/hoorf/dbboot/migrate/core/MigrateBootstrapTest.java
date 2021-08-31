@@ -27,5 +27,25 @@ public class MigrateBootstrapTest {
         bootstrap.start(configuration);
     }
 
+    @Test
+    public void testSharding() throws Exception {
+        Yaml yaml = new Yaml();
+        MigrateConfig configuration = yaml
+            .loadAs(MigrateBootstrapTest.class.getClassLoader().getResourceAsStream("db-migrate-sharding.yml"),
+                MigrateConfig.class);
+        MigrateBootstrap bootstrap = new MigrateBootstrap();
+        bootstrap.start(configuration);
+    }
+
+    @Test
+    public void testRound() throws Exception {
+        Yaml yaml = new Yaml();
+        MigrateConfig configuration = yaml
+            .loadAs(MigrateBootstrapTest.class.getClassLoader().getResourceAsStream("db-migrate-round.yml"),
+                MigrateConfig.class);
+        MigrateBootstrap bootstrap = new MigrateBootstrap();
+        bootstrap.start(configuration);
+    }
+
 
 } 

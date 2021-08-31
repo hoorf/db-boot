@@ -34,13 +34,12 @@ public abstract class AbstractInventoryDumper extends AbstractMigrateExecutor im
     @Setter
     private InventoryJobConfig config;
 
-
     @Override
     public void run0() {
-        DataSourceWrapper dataSource = context.getDataSourceManager().getDataSource(config.getSource());
-        TableMeta tableMeta = context.getDataSourceManager().getTableMeta(dataSource, config.getTable());
-        String pk = Optional.ofNullable(config.getPk()).orElseGet(() -> tableMeta.getPrimaryKeys().get(0));
-        String sql = MigrateSQLBuilderLoader.getInstance(dataSource.getDatabaseType()).buildSelectSQL(config.getTable(), pk);
+        DataSourceWrapper dataSource = context.getDataSourceManager().getDataSource(config.getSource().getDataSourceName());
+        TableMeta tableMeta = context.getDataSourceManager().getTableMeta(dataSource, config.getSource().getTable());
+        String pk = Optional.ofNullable(config.getSource().getPk()).orElseGet(() -> tableMeta.getPrimaryKeys().get(0));
+        String sql = MigrateSQLBuilderLoader.getInstance(dataSource.getDatabaseType()).buildSelectSQL(config.getSource().getTable(), pk);
         try (
             Connection connection = dataSource.getConnection();
             PreparedStatement statement = preparedStatement(connection, sql, (RangePosition) config.getPosition());
@@ -48,7 +47,7 @@ public abstract class AbstractInventoryDumper extends AbstractMigrateExecutor im
             ResultSetMetaData metaData = resultSet.getMetaData();
             while (resultSet.next()) {
                 DataRecord record = new DataRecord(copyMigratePosition(config.getPosition()));
-                record.setTableName(config.getTable());
+                record.setTableName(config.getSource().getTable());
                 for (int index = 1; index <= metaData.getColumnCount(); index++) {
                     String columnName = metaData.getColumnName(index);
                     record.addColumn(new Column(columnName, resultSet.getObject(index), tableMeta.isPrimaryKey(columnName)));

@@ -1,0 +1,3 @@
+org.github.hoorf.dbboot.migrate.core.router.DefaultRouter
+org.github.hoorf.dbboot.migrate.core.router.InlineRouter
+org.github.hoorf.dbboot.migrate.core.router.RoundRouter

@@ -19,7 +19,7 @@ globalConfig:
       username: root
       password: root
 jobs:
-  t_user_migrate_single:
+  t_user_migrate_sharding:
     type: inventory
     source:
       table: t_user
@@ -28,35 +28,18 @@ jobs:
         databaseType: mysql
         batchSize: 100000
     target:
-      table: t_user
-      dataSourceName: newDb_0
+      table: t_user_${0..1}
+      tableStrategy:
+        type: INLINE
+        props:
+          shardingColumns: id
+          algorithm-expression: t_user_${id % 2}
+      dataSourceName: newDb_${0..1}
+      dataSourceStrategy:
+        type: INLINE
+        props:
+          shardingColumns: id
+          algorithm-expression: newDb_${id % 2}
       importConfig:
         databaseType: mysql
         batchSize: 100000
-#  t_user_migrate_sharding:
-#    type: inventory
-#      source:
-#        table: t_user
-#        dataSource: sourceDb
-#      target:
-#        table: t_user_${0..1}
-#        tableStrategy:
-#          type: INLINE
-#          props:
-#            shardingColumns: id
-#            algorithm-expression: t_user_${id % 2}
-#        dataSource: newDb_${0..1}
-#        dataSourceStrategy:
-#          type: INLINE
-#          props:
-#            shardingColumns: id
-#            algorithm-expression: newDb_${id % 2}
-#  t_user_migrate_round:
-#    type: inventory
-#      source:
-#        table: t_user
-#        dataSource: sourceDb
-#      target:
-#        table: t_user
-#        dataSource: newDb_1
-#

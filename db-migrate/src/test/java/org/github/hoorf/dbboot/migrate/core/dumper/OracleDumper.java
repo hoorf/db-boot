@@ -24,7 +24,7 @@ public class OracleDumper implements Dumper {
     }
 
     @Override
-    public String type() {
+    public String getType() {
         return "oracle";
     }
 }

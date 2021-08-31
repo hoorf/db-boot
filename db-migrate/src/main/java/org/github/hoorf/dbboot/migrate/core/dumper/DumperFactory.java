@@ -1,19 +1,20 @@
 package org.github.hoorf.dbboot.migrate.core.dumper;
 
+import org.github.hoorf.dbboot.migrate.core.spi.RegisterSpiLoader;
 import org.github.hoorf.dbboot.migrate.core.spi.TypeSpiLoader;
 
-public class DumperFactory extends TypeSpiLoader {
+public class DumperFactory {
 
     static {
-        register(Dumper.class);
-        register(InventoryDumper.class);
+        RegisterSpiLoader.register(Dumper.class);
+        RegisterSpiLoader.register(InventoryDumper.class);
     }
 
     public static Dumper getInstance(String type) {
-        return newInstance(Dumper.class, type);
+        return TypeSpiLoader.findRegisteredService(Dumper.class, type, null);
     }
 
     public static InventoryDumper getInventoryInstance(String type) {
-        return newInstance(InventoryDumper.class, type);
+        return TypeSpiLoader.findRegisteredService(InventoryDumper.class, type, null);
     }
 }
