@@ -7,7 +7,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Optional;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.github.hoorf.dbboot.migrate.config.task.InventoryJobConfig;
 import org.github.hoorf.dbboot.migrate.core.AbstractMigrateExecutor;
 import org.github.hoorf.dbboot.migrate.core.channel.MigrateChannel;
@@ -22,8 +21,8 @@ import org.github.hoorf.dbboot.migrate.core.record.Column;
 import org.github.hoorf.dbboot.migrate.core.record.DataRecord;
 import org.github.hoorf.dbboot.migrate.core.record.FinishedRecord;
 import org.github.hoorf.dbboot.migrate.core.sqlbuilder.MigrateSQLBuilderLoader;
+import org.github.hoorf.dbboot.migrate.monitor.RecordSpeedCounter;
 
-@Slf4j
 public abstract class AbstractInventoryDumper extends AbstractMigrateExecutor implements InventoryDumper {
 
     @Setter
@@ -35,15 +34,16 @@ public abstract class AbstractInventoryDumper extends AbstractMigrateExecutor im
     @Setter
     private InventoryJobConfig config;
 
+
     @Override
-    public void run() {
+    public void run0() {
         DataSourceWrapper dataSource = context.getDataSourceManager().getDataSource(config.getSource());
         TableMeta tableMeta = context.getDataSourceManager().getTableMeta(dataSource, config.getTable());
         String pk = Optional.ofNullable(config.getPk()).orElseGet(() -> tableMeta.getPrimaryKeys().get(0));
         String sql = MigrateSQLBuilderLoader.getInstance(dataSource.getDatabaseType()).buildSelectSQL(config.getTable(), pk);
         try (
             Connection connection = dataSource.getConnection();
-            PreparedStatement statement = preparedStatement(connection, sql,(RangePosition)config.getPosition());
+            PreparedStatement statement = preparedStatement(connection, sql, (RangePosition) config.getPosition());
             ResultSet resultSet = statement.executeQuery()) {
             ResultSetMetaData metaData = resultSet.getMetaData();
             while (resultSet.next()) {
@@ -54,10 +54,11 @@ public abstract class AbstractInventoryDumper extends AbstractMigrateExecutor im
                     record.addColumn(new Column(columnName, resultSet.getObject(index), tableMeta.isPrimaryKey(columnName)));
                 }
                 channel.push(record);
+                RecordSpeedCounter.countDumper();
             }
             channel.push(new FinishedRecord(new FinishedPosition()));
         } catch (Exception e) {
-            log.error("", e);
+            logger.error("", e);
             throw new RuntimeException(e);
         }
     }
@@ -69,10 +70,10 @@ public abstract class AbstractInventoryDumper extends AbstractMigrateExecutor im
         return new PlaceholderPosition();
     }
 
-    private PreparedStatement preparedStatement(Connection connection, String sql,RangePosition position) throws SQLException{
+    private PreparedStatement preparedStatement(Connection connection, String sql, RangePosition position) throws SQLException {
         PreparedStatement statement = createStatement(connection, sql);
-        statement.setLong(1,position.getBeginValue());
-        statement.setLong(2,position.getEndValue());
+        statement.setLong(1, position.getBeginValue());
+        statement.setLong(2, position.getEndValue());
         return statement;
     }
 

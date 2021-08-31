@@ -8,7 +8,7 @@
     </appender>
     <logger name="org.github.hoorf.dbboot" level="debug"/>
     <logger name="com.zaxxer.hikari.pool" level="debug"/>
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

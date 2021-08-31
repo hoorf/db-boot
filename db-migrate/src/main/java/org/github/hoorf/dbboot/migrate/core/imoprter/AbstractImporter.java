@@ -1,14 +1,11 @@
 package org.github.hoorf.dbboot.migrate.core.imoprter;
 
-import ch.qos.logback.classic.db.SQLBuilder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.github.hoorf.dbboot.migrate.config.JobConfig;
 import org.github.hoorf.dbboot.migrate.core.AbstractMigrateExecutor;
 import org.github.hoorf.dbboot.migrate.core.channel.MigrateChannel;
 import org.github.hoorf.dbboot.migrate.core.context.DataSourceWrapper;
@@ -18,8 +15,8 @@ import org.github.hoorf.dbboot.migrate.core.record.FinishedRecord;
 import org.github.hoorf.dbboot.migrate.core.record.Record;
 import org.github.hoorf.dbboot.migrate.core.sqlbuilder.MigrateSQLBuilder;
 import org.github.hoorf.dbboot.migrate.core.sqlbuilder.MigrateSQLBuilderLoader;
+import org.github.hoorf.dbboot.migrate.monitor.RecordSpeedCounter;
 
-@Slf4j
 public abstract class AbstractImporter extends AbstractMigrateExecutor implements Importer {
 
     @Setter
@@ -29,10 +26,11 @@ public abstract class AbstractImporter extends AbstractMigrateExecutor implement
     private MigrateChannel channel;
 
     @Override
-    public void run() {
+    public void run0() {
         while (isRunning()) {
             List<Record> records = channel.pull(1024, 3);
             if (null != records && records.size() > 0) {
+                RecordSpeedCounter.countImporter(records.size());
                 tryFlush(records);
                 if (records.get(records.size() - 1) instanceof FinishedRecord) {
                     channel.ack();
@@ -48,7 +46,7 @@ public abstract class AbstractImporter extends AbstractMigrateExecutor implement
         try {
             write(records);
         } catch (Exception e) {
-            log.error("", e);
+            logger.error("", e);
         }
     }
 
@@ -67,7 +65,8 @@ public abstract class AbstractImporter extends AbstractMigrateExecutor implement
         MigrateSQLBuilder sqlBuilder = MigrateSQLBuilderLoader.getInstance(dataSource.getDatabaseType());
         List<DataRecord> dataRecords = records.stream().filter(each -> each instanceof DataRecord).map(each -> (DataRecord) each).collect(Collectors.toList());
         if (dataRecords.size() > 0) {
-            String insertSql = sqlBuilder.buildInsertSQL(dataRecords.get(0));
+            String insertSql = sqlBuilder.buildInsertOrUpdateSQL(dataRecords.get(0));
+            logger.debug(insertSql);
             try (PreparedStatement ps = connection.prepareStatement(insertSql)) {
                 ps.setQueryTimeout(30);
                 for (DataRecord dataRecord : dataRecords) {

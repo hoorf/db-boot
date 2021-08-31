@@ -13,6 +13,10 @@ import org.github.hoorf.dbboot.migrate.core.task.MigrateTask;
 
 
 public class MigrateContext implements AutoCloseable {
+
+    @Getter
+    private ExecuteEngine taskExecuteEngine;
+
     @Getter
     private ExecuteEngine executeEngine;
 
@@ -34,6 +38,7 @@ public class MigrateContext implements AutoCloseable {
         dataSources.entrySet().forEach(each -> each.getValue().setName(each.getKey()));
         dataSourceManager = new DataSourceManager(dataSources.values());
         executeEngine = ExecuteEngine.newCachedThreadPool();
+        taskExecuteEngine = ExecuteEngine.newCachedThreadPool();
         this.globalConfig = globalConfig;
         this.jobConfig = jobConfig;
     }
@@ -42,5 +47,6 @@ public class MigrateContext implements AutoCloseable {
     public void close() throws Exception {
         executeEngine.close();
         dataSourceManager.close();
+        taskExecuteEngine.close();
     }
 }

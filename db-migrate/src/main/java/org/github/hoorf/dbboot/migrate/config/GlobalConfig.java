@@ -18,7 +18,7 @@ public class GlobalConfig {
     @Getter
     @Setter
     public static class DumpConfig {
-        private Integer batchSize = 1000;
+        private Integer batchSize = 100000;
     }
 
     @Getter

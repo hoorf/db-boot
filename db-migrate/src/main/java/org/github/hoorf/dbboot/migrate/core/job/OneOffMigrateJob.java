@@ -1,6 +1,8 @@
 package org.github.hoorf.dbboot.migrate.core.job;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.time.StopWatch;
 import org.github.hoorf.dbboot.migrate.config.GlobalConfig;
 import org.github.hoorf.dbboot.migrate.config.JobConfig;
 import org.github.hoorf.dbboot.migrate.core.context.MigrateContext;
@@ -26,12 +28,16 @@ public class OneOffMigrateJob implements MigrateJob {
         context = new MigrateContext(globalConfig, jobConfig);
         MigratePreparer preparer = new MigratePreparer();
         List<MigratePosition> positions = preparer.prepare(context);
+        StopWatch started = StopWatch.createStarted();
         for (MigratePosition position : positions) {
             MigrateTask migrateTask = MigrateTaskFactory.newTask(context, jobConfig, position);
-           // migrateTask.run();
-             context.getExecuteEngine().submit(migrateTask, null);
+            //migrateTask.run();
+            context.getTaskExecuteEngine().submit(migrateTask, null);
         }
-        context.getExecuteEngine().awaitFinish();
+        context.getTaskExecuteEngine().awaitFinish();
+
+        started.stop();
+        System.err.println(started.getTime(TimeUnit.SECONDS));
     }
 
 

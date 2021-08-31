@@ -9,6 +9,7 @@ public interface MigrateSQLBuilder extends TypeSpi {
 
     String buildSelectPkRangeSQL(String tableName, String pk);
 
+    public String buildInsertOrUpdateSQL(DataRecord dataRecord);
 
     String buildSelectSQL(String tableName, String pk);
 }

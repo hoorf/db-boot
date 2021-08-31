@@ -2,8 +2,8 @@ package org.github.hoorf.dbboot.migrate.core.task.inventory;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.github.hoorf.dbboot.migrate.config.task.InventoryJobConfig;
 import org.github.hoorf.dbboot.migrate.core.AbstractMigrateExecutor;
 import org.github.hoorf.dbboot.migrate.core.channel.MemoryChannel;
@@ -17,7 +17,6 @@ import org.github.hoorf.dbboot.migrate.core.position.PlaceholderPosition;
 import org.github.hoorf.dbboot.migrate.core.record.Record;
 import org.github.hoorf.dbboot.migrate.core.task.MigrateTask;
 
-@Slf4j
 public class InventoryTask extends AbstractMigrateExecutor implements MigrateTask {
 
     @Getter
@@ -55,24 +54,30 @@ public class InventoryTask extends AbstractMigrateExecutor implements MigrateTas
 
 
     @Override
-    public void run() {
-        start();
+    public void run0() {
         MemoryChannel channel = new MemoryChannel(records -> {
             Optional<Record> record = records.stream().filter(each -> !(each.getPosition() instanceof PlaceholderPosition)).reduce((a, b) -> b);
             record.ifPresent(value -> position = value.getPosition());
         });
         dumper.setChannel(channel);
         importer.setChannel(channel);
-        dumper.start();
-        importer.start();
-        //dumper.run();
-        //importer.run();
-        context.getExecuteEngine().submit(dumper, null, null);
-        context.getExecuteEngine().submit(importer, Void -> {
-            log.error("-----------------success dumper for {}-----------------------",taskId);
-        }, e -> {
-            log.error("-----------------error for -----------------------");
+        CompletableFuture dumpFuture = context.getExecuteEngine().submit(dumper);
+        CompletableFuture importFuture = context.getExecuteEngine().submit(importer).exceptionally(e -> {
             dumper.stop();
+            return null;
         });
+        try {
+            importFuture.get();
+        } catch (Exception e) {
+
+        }
+
+//        try {
+//            CompletableFuture.allOf(CompletableFuture.runAsync(dumper),CompletableFuture.runAsync(importer)).get();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
     }
 }

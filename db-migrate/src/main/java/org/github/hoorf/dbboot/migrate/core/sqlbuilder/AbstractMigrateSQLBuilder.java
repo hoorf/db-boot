@@ -14,6 +14,8 @@ public abstract class AbstractMigrateSQLBuilder implements MigrateSQLBuilder {
 
     private static final String DELETE_SQL_CACHE_KEY_PREFIX = "DELETE_";
 
+    private static final String INSERT_OR_UPDATE_SQL_CACHE_KEY_PREFIX = "INSERT_OR_UPDATE";
+
     private final ConcurrentMap<String, String> sqlCacheMap = new ConcurrentHashMap<>();
 
 
@@ -21,6 +23,13 @@ public abstract class AbstractMigrateSQLBuilder implements MigrateSQLBuilder {
         String sqlCacheKey = INSERT_SQL_CACHE_KEY_PREFIX + dataRecord.getTableName();
         return sqlCacheMap.computeIfAbsent(sqlCacheKey, e -> buildInsertSQLInternal(dataRecord.getTableName(), dataRecord.getColumns()));
     }
+
+    public String buildInsertOrUpdateSQL(DataRecord dataRecord) {
+        String sqlCacheKey = INSERT_OR_UPDATE_SQL_CACHE_KEY_PREFIX + dataRecord.getTableName();
+        return sqlCacheMap.computeIfAbsent(sqlCacheKey, e -> buildInsertOrUpdateSQLInternal(dataRecord.getTableName(), dataRecord.getColumns()));
+    }
+
+    protected abstract String buildInsertOrUpdateSQLInternal(String tableName, List<Column> columnList);
 
     private String buildInsertSQLInternal(String tableName, List<Column> columnList) {
         StringBuilder labelHolder = new StringBuilder();
